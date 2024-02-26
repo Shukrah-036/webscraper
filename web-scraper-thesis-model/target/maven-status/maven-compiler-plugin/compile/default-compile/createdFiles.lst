@@ -1,0 +1,15 @@
+com/scrapernest/webscraperthesismodel/repository/ScraperRepository.class
+com/scrapernest/webscraperthesismodel/model/Main.class
+com/scrapernest/webscraperthesismodel/model/User.class
+com/scrapernest/webscraperthesismodel/repository/ScraperResultRepository.class
+com/scrapernest/webscraperthesismodel/model/Item$ItemBuilder.class
+com/scrapernest/webscraperthesismodel/model/Item.class
+com/scrapernest/webscraperthesismodel/model/ScraperController.class
+com/scrapernest/webscraperthesismodel/model/ScraperResult$ScraperResultBuilder.class
+com/scrapernest/webscraperthesismodel/model/User$UserBuilder.class
+com/scrapernest/webscraperthesismodel/repository/ItemRepository.class
+com/scrapernest/webscraperthesismodel/scraper/WebScraperThesisModelApplication.class
+com/scrapernest/webscraperthesismodel/repository/UserRepository.class
+com/scrapernest/webscraperthesismodel/scraper/MongoDBConnection.class
+com/scrapernest/webscraperthesismodel/model/ScraperResult.class
+com/scrapernest/webscraperthesismodel/model/Scraper.class

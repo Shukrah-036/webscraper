@@ -1,0 +1,12 @@
+/Users/shukrahalimi/IdeaProjects/web-scraper-thesis/web-scraper-thesis-model/src/main/java/com/scrapernest/webscraperthesismodel/scraper/WebScraperThesisModelApplication.java
+/Users/shukrahalimi/IdeaProjects/web-scraper-thesis/web-scraper-thesis-model/src/main/java/com/scrapernest/webscraperthesismodel/model/Item.java
+/Users/shukrahalimi/IdeaProjects/web-scraper-thesis/web-scraper-thesis-model/src/main/java/com/scrapernest/webscraperthesismodel/repository/ItemRepository.java
+/Users/shukrahalimi/IdeaProjects/web-scraper-thesis/web-scraper-thesis-model/src/main/java/com/scrapernest/webscraperthesismodel/model/ScraperResult.java
+/Users/shukrahalimi/IdeaProjects/web-scraper-thesis/web-scraper-thesis-model/src/main/java/com/scrapernest/webscraperthesismodel/model/Scraper.java
+/Users/shukrahalimi/IdeaProjects/web-scraper-thesis/web-scraper-thesis-model/src/main/java/com/scrapernest/webscraperthesismodel/scraper/MongoDBConnection.java
+/Users/shukrahalimi/IdeaProjects/web-scraper-thesis/web-scraper-thesis-model/src/main/java/com/scrapernest/webscraperthesismodel/repository/ScraperResultRepository.java
+/Users/shukrahalimi/IdeaProjects/web-scraper-thesis/web-scraper-thesis-model/src/main/java/com/scrapernest/webscraperthesismodel/repository/ScraperRepository.java
+/Users/shukrahalimi/IdeaProjects/web-scraper-thesis/web-scraper-thesis-model/src/main/java/com/scrapernest/webscraperthesismodel/model/Main.java
+/Users/shukrahalimi/IdeaProjects/web-scraper-thesis/web-scraper-thesis-model/src/main/java/com/scrapernest/webscraperthesismodel/model/User.java
+/Users/shukrahalimi/IdeaProjects/web-scraper-thesis/web-scraper-thesis-model/src/main/java/com/scrapernest/webscraperthesismodel/model/ScraperController.java
+/Users/shukrahalimi/IdeaProjects/web-scraper-thesis/web-scraper-thesis-model/src/main/java/com/scrapernest/webscraperthesismodel/repository/UserRepository.java
