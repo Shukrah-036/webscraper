@@ -1,0 +1,19 @@
+[ {
+  "scraperName" : "Scraper_JapaneseKnives_Test",
+  "timeStamp" : "2023-11-20T22:24:54.506264",
+  "extractedData" : [ "€ 159,00" ],
+  "associatedItem" : {
+    "selector" : "#article_83708816 > span.row-bottom > div > div > span > span.action",
+    "label" : "Price"
+  },
+  "success" : true
+}, {
+  "scraperName" : "Scraper_JapaneseKnives_Test",
+  "timeStamp" : "2023-11-20T22:42:17.727945",
+  "extractedData" : [ "€ 159,00" ],
+  "associatedItem" : {
+    "selector" : "#article_83708816 > span.row-bottom > div > div > span > span.action",
+    "label" : "Price"
+  },
+  "success" : true
+} ]
