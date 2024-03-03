@@ -2,6 +2,7 @@ package com.scrapernest.webscraperthesiscmdline;
 
 import com.scrapernest.webscraperthesismodel.model.Item;
 import com.scrapernest.webscraperthesismodel.model.ScraperController;
+import org.apache.commons.cli.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -26,34 +27,48 @@ public class WebScraperThesisCmdlineApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        Scanner scanner = new Scanner(System.in);
+        Options options = new Options();
 
-        System.out.print("Enter targetUrl to scrape from: ");
-        String targetUrl = scanner.nextLine();
+        options.addOption("n", "name", true, "Name of Scraper");
+        options.addOption("u", "url", true, "Target URL to scrape from");
+        options.addOption("s", "selector", true, "CSS Selector");
+        options.addOption("l", "label", true, "Label of selector");
 
-        System.out.print("Enter scraperName: ");
-        String scraperName = scanner.nextLine();
+        CommandLineParser parser = new DefaultParser();
 
-        List<Item> scraperItems = new ArrayList<>();
+        try {
+            CommandLine cmd = parser.parse(options, args);
 
-        while (true) {
-            System.out.print("Enter selector (or 'exit' to finish): ");
-            String selector = scanner.nextLine();
+            String targetUrl = cmd.getOptionValue("u");
+            String scraperName = cmd.getOptionValue("n");
 
-            if ("exit".equalsIgnoreCase(selector.trim())) {
-                break;
+            String[] selectors = cmd.getOptionValues("s");
+            String[] labels = cmd.getOptionValues("l");
+
+            if (selectors == null || labels == null || selectors.length == 0 || labels.length == 0
+                    || selectors.length != labels.length){
+                System.err.println("Error: You must provide at least one pair of selector and label, " +
+                        "and the number of selectors must match the number of labels.");
+                HelpFormatter formatter = new HelpFormatter();
+                formatter.printHelp("WebScraperThesisCmdlineApplication", options);
+                return;
             }
 
-            System.out.print("Enter label: ");
-            String label = scanner.nextLine();
+            List<Item> scraperItems = new ArrayList<>();
+            for (int i = 0; i < selectors.length; i++){
+                scraperItems.add(Item.builder().selector(selectors[i]).label(labels[i]).build());
+            }
 
-            scraperItems.add(Item.builder().selector(selector).label(label).build());
+            scraperController.setTargetUrl(targetUrl);
+            scraperController.scrapeAndSaveResults(scraperName, scraperItems);
+            System.out.println("Scraping completed.");
+        }
+        catch (ParseException e){
+            System.err.println("Error parsing command line options: " + e.getMessage());
+            HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp("WebScraperThesisCmdlineApplication", options);
         }
 
-        scraperController.setTargetUrl(targetUrl);
-        scraperController.scrapeAndSaveResults(scraperName, scraperItems);
-
-        System.out.println("Scraping completed.");
     }
 
 }
