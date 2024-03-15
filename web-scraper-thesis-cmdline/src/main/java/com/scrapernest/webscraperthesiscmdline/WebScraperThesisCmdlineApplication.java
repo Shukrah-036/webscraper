@@ -11,7 +11,6 @@ import org.springframework.context.annotation.ComponentScan;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.scrapernest.webscraperthesismodel"})
