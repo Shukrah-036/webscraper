@@ -19,24 +19,34 @@ public class WebScraperThesisCmdlineApplication implements CommandLineRunner {
     @Autowired
     private ScraperController scraperController;
 
+    private Options options;
+
     public static void main(String[] args) {
         SpringApplication.run(WebScraperThesisCmdlineApplication.class, args);
     }
 
-
-    @Override
-    public void run(String... args) {
-        Options options = new Options();
+    public WebScraperThesisCmdlineApplication() {
+        options = new Options();
 
         options.addOption("n", "name", true, "Name of Scraper");
         options.addOption("u", "url", true, "Target URL to scrape from");
         options.addOption("s", "selector", true, "CSS Selector");
         options.addOption("l", "label", true, "Label of selector");
+        options.addOption("h", "help", false, "Print this help message");
+    }
 
+    @Override
+    public void run(String... args) {
         CommandLineParser parser = new DefaultParser();
 
         try {
             CommandLine cmd = parser.parse(options, args);
+
+            if (cmd.hasOption("h")) {
+                HelpFormatter formatter = new HelpFormatter();
+                formatter.printHelp("WebScraperThesisCmdlineApplication", options);
+                return;
+            }
 
             String targetUrl = cmd.getOptionValue("u");
             String scraperName = cmd.getOptionValue("n");
