@@ -1,10 +1,12 @@
 package com.scrapernest.webscraperthesismodel.model;
 
+import com.scrapernest.webscraperthesismodel.repository.ScraperResultRepository;
 import lombok.*;
 import org.bson.types.ObjectId;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.tinylog.Logger;
@@ -42,6 +44,21 @@ public class Scraper {
     @Getter
     @Setter
     private List<ScraperResult> scraperResults;
+
+    @Getter
+    @Setter
+    private boolean loaded = false;
+
+    @Autowired
+    private ScraperResultRepository scraperResultRepository;
+
+    public List<ScraperResult> getScraperResults() {
+        if (!loaded) {
+            this.scraperResults = loadScraperResultsFromDatabase();
+            loaded = true;
+        }
+        return scraperResults;
+    }
 
 
     public void execute() {
@@ -84,6 +101,11 @@ public class Scraper {
 
             Logger.error("Error occurred during web scraping: {}", e.getMessage(), e);
         }
+    }
+
+    private List<ScraperResult> loadScraperResultsFromDatabase() {
+
+        return scraperResultRepository.findByScraperName(name);
     }
 
 }
