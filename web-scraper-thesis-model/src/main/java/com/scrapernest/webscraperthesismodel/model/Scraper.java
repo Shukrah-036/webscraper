@@ -9,6 +9,8 @@ import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.tinylog.Logger;
 
 import java.io.IOException;
@@ -16,6 +18,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+
+@Service
 @Data
 @Document(collection = "scrapers")
 public class Scraper {
@@ -44,21 +48,6 @@ public class Scraper {
     @Getter
     @Setter
     private List<ScraperResult> scraperResults;
-
-    @Getter
-    @Setter
-    private boolean loaded = false;
-
-    @Autowired
-    private ScraperResultRepository scraperResultRepository;
-
-    public List<ScraperResult> getScraperResults() {
-        if (!loaded) {
-            this.scraperResults = loadScraperResultsFromDatabase();
-            loaded = true;
-        }
-        return scraperResults;
-    }
 
 
     public void execute() {
@@ -103,9 +92,5 @@ public class Scraper {
         }
     }
 
-    private List<ScraperResult> loadScraperResultsFromDatabase() {
-
-        return scraperResultRepository.findByScraperName(name);
-    }
 
 }
