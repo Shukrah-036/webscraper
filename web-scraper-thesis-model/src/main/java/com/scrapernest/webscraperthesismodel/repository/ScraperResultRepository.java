@@ -8,6 +8,4 @@ import java.util.List;
 
 @Repository
 public interface ScraperResultRepository extends MongoRepository<ScraperResult, String> {
-
-    List<ScraperResult> findByScraperName(String scraperName);
 }
