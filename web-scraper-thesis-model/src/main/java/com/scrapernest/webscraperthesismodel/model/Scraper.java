@@ -1,16 +1,13 @@
 package com.scrapernest.webscraperthesismodel.model;
 
-import com.scrapernest.webscraperthesismodel.repository.ScraperResultRepository;
 import lombok.*;
 import org.bson.types.ObjectId;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.tinylog.Logger;
 
