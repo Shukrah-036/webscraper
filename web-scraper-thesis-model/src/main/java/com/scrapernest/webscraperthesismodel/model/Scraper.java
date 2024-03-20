@@ -8,6 +8,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -43,10 +44,12 @@ public class Scraper {
 
     @Getter
     @Setter
+    @DBRef(lazy = true)
     private List<Item> scraperItems;
 
     @Getter
     @Setter
+    @DBRef(lazy = true)
     private List<ScraperResult> scraperResults;
 
 
