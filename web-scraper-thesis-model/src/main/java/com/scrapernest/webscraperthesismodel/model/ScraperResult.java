@@ -2,6 +2,7 @@ package com.scrapernest.webscraperthesismodel.model;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -31,6 +32,7 @@ public class ScraperResult {
 
     @Getter
     @Setter
+    @DBRef(lazy = true)
     private List<Item> associatedItems;
 
 }
