@@ -29,33 +29,18 @@ public class ScraperController {
     @Autowired
     private ItemRepository itemRepository;
 
-    @Autowired
-    private MongoDBConnection mongoDBConnection;
-
     @Setter
     private String targetUrl;
 
-    private boolean loaded = false;
 
     public void scrapeAndSaveResults(String scraperName, List<Item> scraperItems) {
         Logger.info("Starting scraping process...");
-
-        List<ScraperResult> scraperResults = new ArrayList<>();
-
-        Logger.debug("Checking if scraper results need to be loaded...");
-        if (!loaded) {
-            Logger.debug("Scraper results are being loaded for the first time...");
-            scraperResults = scraperResultRepository.findByScraperName(scraperName);
-            loaded = true;
-        } else {
-            Logger.debug("Scraper results have already been loaded previously...");
-        }
 
         Scraper scraper = new Scraper();
         scraper.setTargetUrl(targetUrl);
         scraper.setName(scraperName);
         scraper.setScraperItems(scraperItems);
-        scraper.setScraperResults(scraperResults != null ? scraperResults : List.of());
+        scraper.setScraperResults(List.of());
         scraper.execute();
 
         for (int i = 0; i < scraper.getScraperResults().size(); i++) {
@@ -81,7 +66,6 @@ public class ScraperController {
         scraperRepository.save(scraper);
         Logger.info("Scraping process completed.");
 
-        loaded = false;
     }
 
     private boolean hasResultChanged(ScraperResult existingResult, ScraperResult newResult) {
