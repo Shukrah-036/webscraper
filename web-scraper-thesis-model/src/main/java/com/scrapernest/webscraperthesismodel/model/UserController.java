@@ -1,6 +1,7 @@
 package com.scrapernest.webscraperthesismodel.model;
 
 import com.scrapernest.webscraperthesismodel.repository.UserRepository;
+import com.scrapernest.webscraperthesismodel.scraper.SystemErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -29,8 +30,16 @@ public class UserController {
         Logger.info("Enter new username: ");
         String username = scanner.nextLine().trim();
 
+        if (userRepository.existsByUsername(username)) {
+            throw new SystemErrorException("SORRY, THIS USER ALREADY EXISTS");
+        }
+
         Logger.info("Enter new email address: ");
         String email = scanner.nextLine().trim();
+
+        if (userRepository.existsByEmail(email)) {
+            throw new SystemErrorException("SORRY, THIS USER ALREADY EXISTS");
+        }
 
         Logger.info("Enter password:");
         String password = scanner.nextLine().trim();
@@ -60,10 +69,10 @@ public class UserController {
                 Logger.info("Login successful.");
 
             } else {
-                Logger.error("Invalid password.");
+                throw new SystemErrorException("INCORRECT PASSWORD");
             }
         } else {
-            Logger.error("User not found.");
+            throw new SystemErrorException("USER CANNOT BE FOUND");
         }
     }
 
