@@ -37,10 +37,12 @@ public class ScraperResult {
 
     @Override
     public String toString() {
-        return "ScraperResult {" + '\n' +
+        return "ScraperResult{" +
+                "id='" + id + '\'' +
                 ", scraperName='" + scraperName + '\'' +
                 ", timeStamp=" + timeStamp +
-                ", extractedData=" + extractedData + '\n' +
+                ", extractedData=" + extractedData +
+                ", associatedItems=" + associatedItems +
                 '}';
     }
 }
