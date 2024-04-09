@@ -20,7 +20,7 @@ public class QuartzConfig {
     @Bean
     public Trigger scraperJobTrigger() {
         SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
-                .withIntervalInHours(24) // Set your desired interval here
+                .withIntervalInMinutes(2)
                 .repeatForever();
 
         return TriggerBuilder.newTrigger()
