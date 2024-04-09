@@ -1,16 +1,13 @@
 package com.scrapernest.webscraperthesiscmdline;
 
-import com.scrapernest.webscraperthesismodel.model.Item;
-import com.scrapernest.webscraperthesismodel.model.ScraperController;
-import com.scrapernest.webscraperthesismodel.model.UserController;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.scrapernest.webscraperthesismodel.model.*;
 import com.scrapernest.webscraperthesismodel.repository.UserRepository;
 import com.scrapernest.webscraperthesismodel.scraper.SystemErrorException;
 import org.apache.commons.cli.*;
-import org.jline.keymap.BindingReader;
-import org.jline.keymap.KeyMap;
-import org.jline.reader.LineReader;
-import org.jline.reader.LineReaderBuilder;
-import org.jline.reader.impl.completer.StringsCompleter;
+import org.hibernate.Hibernate;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.*;
@@ -19,16 +16,22 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.transaction.annotation.Transactional;
 import org.tinylog.Logger;
 
-import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
 @SpringBootApplication
+@EnableScheduling
 @ComponentScan(basePackages = {"com.scrapernest.webscraperthesismodel"})
 public class WebScraperThesisCmdlineApplication implements CommandLineRunner {
 
@@ -44,6 +47,10 @@ public class WebScraperThesisCmdlineApplication implements CommandLineRunner {
     private final Scanner scanner;
     private Options options;
 
+    private User currentUser;
+
+    private final ObjectMapper objectMapper;
+
 
     public static void main(String[] args) {
         SpringApplication.run(WebScraperThesisCmdlineApplication.class, args);
@@ -51,6 +58,10 @@ public class WebScraperThesisCmdlineApplication implements CommandLineRunner {
 
     public WebScraperThesisCmdlineApplication() {
         scanner = new Scanner(System.in);
+
+        objectMapper = new ObjectMapper();
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        objectMapper.registerModule(new JavaTimeModule());
 
         options = new Options();
 
@@ -68,6 +79,7 @@ public class WebScraperThesisCmdlineApplication implements CommandLineRunner {
 
         authenticateUser();
 
+        currentUser = userController.getCurrentUser();
         showOptions();
 
     }
@@ -114,7 +126,7 @@ public class WebScraperThesisCmdlineApplication implements CommandLineRunner {
         try {
             Terminal terminal = TerminalBuilder.builder().build();
 
-            String[] options = {"Profile", "Scrapers", "New Scraper", "Log Out"};
+            String[] options = {"Profile", "Download Scraped Data", "Scrapers", "New Scraper", "Log Out"};
             int currentIndex = 0;
 
             Logger.info("Press 'j' to move down, 'k' to move up and 'y' to select the current option");
@@ -163,10 +175,16 @@ public class WebScraperThesisCmdlineApplication implements CommandLineRunner {
     private void handleSelection(String option) {
         switch (option.toLowerCase()) {
             case "profile":
-                Logger.debug("PROFILE PAGE");
+                Logger.info("Opening PROFILE page");
+                displayProfile();
                 break;
+            case "download scraped data":
+                downloadScrapedData();
+                break;
+
             case "scrapers":
-                Logger.debug("SCRAPERS PAGE");
+                Logger.debug("opening PREVIOUS SCRAPERS page");
+                displayPreviousScrapers();
                 break;
             case "new scraper":
                 Logger.info("Please provide command line arguments:");
@@ -208,7 +226,6 @@ public class WebScraperThesisCmdlineApplication implements CommandLineRunner {
     }
 
 
-
     public void processScraperArguments(String[] args) {
         Logger.info("Enter scraper details:");
 
@@ -244,12 +261,69 @@ public class WebScraperThesisCmdlineApplication implements CommandLineRunner {
             }
 
             scraperController.setTargetUrl(targetUrl);
-            scraperController.scrapeAndSaveResults(scraperName, scraperItems);
+            scraperController.scrapeAndSaveResults(currentUser, scraperName, scraperItems);
             System.out.println("Scraping completed.");
         } catch (ParseException e) {
             System.err.println("Error parsing command line options: " + e.getMessage());
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("WebScraperThesisCmdlineApplication", options);
+        }
+    }
+
+    public void displayProfile() {
+        System.out.println("*********************************YOUR PROFILE*********************************");
+        System.out.println("______________________________________________________________________________");
+        System.out.println("\n");
+        System.out.println("~~~~~ Username: " + currentUser.getUsername());
+        System.out.println("~~~~~ Email: " + currentUser.getEmail());
+    }
+
+    public void downloadScrapedData() {
+        List<Scraper> userScrapers = currentUser.getScrapers();
+        if (userScrapers != null && !userScrapers.isEmpty()) {
+            try {
+                String jsonData = objectMapper.writeValueAsString(userScrapers);
+
+                File file = new File("scraped_data.json");
+                objectMapper.writeValue(file, userScrapers);
+
+                ByteArrayResource resource = new ByteArrayResource(jsonData.getBytes());
+                HttpHeaders headers = new HttpHeaders();
+                headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=scraped_data.json");
+
+                ResponseEntity<ByteArrayResource> responseEntity = ResponseEntity.ok()
+                        .headers(headers)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(resource);
+
+                System.out.println("Downloading scraped data...");
+                System.out.println("File saved as scraped_data.json");
+
+            } catch (IOException e) {
+                Logger.error("Error while downloading scraped data: " + e.getMessage());
+            }
+        } else {
+            Logger.info("No scraped data available to download.");
+        }
+    }
+
+    @Transactional
+    public void displayPreviousScrapers() {
+        System.out.println("****************************YOUR PREVIOUS SCRAPERS****************************");
+        System.out.println("______________________________________________________________________________");
+        System.out.println("\n");
+
+        List<Scraper> userScrapers = currentUser.getScrapers();
+        if (userScrapers != null){
+            System.out.println("~~~~~ These are all your previous scrapers ~~~~~:");
+            for (Scraper scraper : userScrapers) {
+                Hibernate.initialize(scraper.getScraperItems());
+                Hibernate.initialize(scraper.getScraperResults());
+                System.out.println("***: " + scraper + "\n");
+            }
+        } else {
+            System.out.println("You had not previously made any scrapers!");
+            System.out.println("To make your first scraper, press j to return to the options menu page and get scraping!");
         }
     }
 }
