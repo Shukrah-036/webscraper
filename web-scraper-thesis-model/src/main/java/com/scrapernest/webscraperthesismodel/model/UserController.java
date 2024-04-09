@@ -2,6 +2,8 @@ package com.scrapernest.webscraperthesismodel.model;
 
 import com.scrapernest.webscraperthesismodel.repository.UserRepository;
 import com.scrapernest.webscraperthesismodel.scraper.SystemErrorException;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -19,6 +21,10 @@ public class UserController {
     private final Scanner scanner;
 
     private final PasswordEncoder passwordEncoder;
+
+    @Getter
+    @Setter
+    private User currentUser;
 
     public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         scanner = new Scanner(System.in);
@@ -52,6 +58,7 @@ public class UserController {
 
         userRepository.save(newUser);
         Logger.info( username + ": signed up successfully");
+        currentUser = newUser;
     }
 
     public void logIn() {
@@ -67,6 +74,7 @@ public class UserController {
 
             if(passwordEncoder.matches(password, user.getPassword())) {
                 Logger.info("Login successful.");
+                currentUser = user;
 
             } else {
                 throw new SystemErrorException("INCORRECT PASSWORD");
