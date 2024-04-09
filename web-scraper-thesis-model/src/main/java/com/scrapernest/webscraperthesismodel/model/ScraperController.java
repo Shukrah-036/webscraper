@@ -4,11 +4,13 @@ package com.scrapernest.webscraperthesismodel.model;
 import com.scrapernest.webscraperthesismodel.repository.ItemRepository;
 import com.scrapernest.webscraperthesismodel.repository.ScraperRepository;
 import com.scrapernest.webscraperthesismodel.repository.ScraperResultRepository;
+import com.scrapernest.webscraperthesismodel.repository.UserRepository;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.tinylog.Logger;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -24,14 +26,18 @@ public class ScraperController {
     @Autowired
     private ItemRepository itemRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Setter
     private String targetUrl;
 
 
-    public void scrapeAndSaveResults(String scraperName, List<Item> scraperItems) {
+    public void scrapeAndSaveResults(User user, String scraperName, List<Item> scraperItems) {
         Logger.info("Starting scraping process...");
 
         Scraper scraper = new Scraper();
+        scraper.setUser(user);
         scraper.setTargetUrl(targetUrl);
         scraper.setName(scraperName);
         scraper.setScraperItems(scraperItems);
@@ -59,6 +65,15 @@ public class ScraperController {
             }
         }
         scraperRepository.save(scraper);
+
+        List<Scraper> userScrapers = user.getScrapers();
+        if (userScrapers == null) {
+            userScrapers = new ArrayList<>();
+        }
+        userScrapers.add(scraper);
+        user.setScrapers(userScrapers);
+        userRepository.save(user);
+
         Logger.info("Scraping process completed.");
 
     }
