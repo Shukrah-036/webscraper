@@ -14,7 +14,7 @@ public class ScraperJob implements Job {
     private Scraper scraper;
 
     @Override
-    public void execute(JobExecutionContext context) throws JobExecutionException {
+    public void execute(JobExecutionContext context) {
         scraper.execute();
     }
 }
