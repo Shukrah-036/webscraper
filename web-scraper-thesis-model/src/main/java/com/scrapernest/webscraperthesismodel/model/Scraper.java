@@ -1,5 +1,6 @@
 package com.scrapernest.webscraperthesismodel.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.bson.types.ObjectId;
 import org.jsoup.Jsoup;
@@ -49,6 +50,23 @@ public class Scraper {
     @DBRef(lazy = true)
     private List<ScraperResult> scraperResults;
 
+    @Getter
+    @Setter
+    @DBRef
+    @JsonIgnore
+    private User user;
+
+    @Override
+    public String toString() {
+        return "Scraper{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", targetUrl='" + targetUrl + '\'' +
+                ", scraperItems=" + scraperItems +
+                ", scraperResults=" + scraperResults +
+                ", user=" + user +
+                '}';
+    }
 
     public void execute() {
 
