@@ -35,4 +35,12 @@ public class ScraperResult {
     @DBRef(lazy = true)
     private List<Item> associatedItems;
 
+    @Override
+    public String toString() {
+        return "ScraperResult {" + '\n' +
+                ", scraperName='" + scraperName + '\'' +
+                ", timeStamp=" + timeStamp +
+                ", extractedData=" + extractedData + '\n' +
+                '}';
+    }
 }
