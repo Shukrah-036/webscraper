@@ -24,9 +24,10 @@ public class Item {
 
     @Override
     public String toString() {
-        return "Item {" + '\n' +
+        return "Item{" +
+                "id='" + id + '\'' +
                 ", selector='" + selector + '\'' +
-                ", label='" + label + '\'' + '\n' +
+                ", label='" + label + '\'' +
                 '}';
     }
 }
