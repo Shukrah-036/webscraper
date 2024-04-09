@@ -22,4 +22,11 @@ public class Item {
     @Setter
     private String label;
 
+    @Override
+    public String toString() {
+        return "Item {" + '\n' +
+                ", selector='" + selector + '\'' +
+                ", label='" + label + '\'' + '\n' +
+                '}';
+    }
 }
